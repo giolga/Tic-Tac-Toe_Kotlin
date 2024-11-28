@@ -2,25 +2,8 @@ var gridSize: Int = 3
 var grid = Array(gridSize) { CharArray(gridSize) }
 var gameOver: Boolean = false
 var player: Int = 1
-var countOfMoves = 0
 
 fun main() {
-    restart()
-
-    while (!gameOver) {
-        setField()
-        inputCharacter()
-
-        if(gameOver) {
-            print("Would you like to continue this program running? Y/N: ")
-            var answer = readLine()!!
-            if (answer[0].lowercaseChar() == 'y')
-                restart()
-        }
-    }
-}
-
-fun restart() {
     print("Insert a grid size(between 3 and 5): ")
     gridSize = readLine()!!.toInt()
     grid = Array(gridSize) { CharArray(gridSize) }
@@ -40,22 +23,14 @@ fun restart() {
         }
     }
 
-    //this restarts the entire game
-     gameOver = false
-     player = 1
-     countOfMoves = 0
+    while (!gameOver) {
+//        if (gameOver) break
+        setField()
+        inputCharacter()
+    }
 }
 
-
 fun inputCharacter() {
-    println("Count of moves: $countOfMoves")
-    if(countOfMoves == Math.pow(gridSize.toDouble(), 2.0).toInt()) {
-        println("DRAW!")
-        setField()
-        gameOver = true
-        return
-    }
-
     val input = readLine()!!
     val XorY: Char = if (player == 1) 'X' else 'O'
     val character: Char
@@ -98,14 +73,17 @@ fun inputCharacter() {
         }
 
         player = if(player == 1) 2 else  1
-        countOfMoves++
     }
 
 }
 
 fun setField() {
 //    repeat(50) { println()}
-    println("Player 1 - X \nPlayer 2 - O \nPlayer $player 's turn\n")
+    println("Player 1 - O \nPlayer 2 - X \nPlayer $player 's turn\n")
+
+    for (i in grid.indices) {
+        println(grid[i])
+    }
 
     var row = 0
     for (i in 0 until gridSize * 2 - 1) {
@@ -134,12 +112,18 @@ fun setField() {
 fun checkHorizontally(row: Int, character: Char): Boolean {
     //check if horizontal layer contains the same elements
     for(column in grid[row].indices) {
+//        println("Checking grid[$row][$column]: ${grid[row][column]}")
         if(character != grid[row][column]) {
             return  false
         }
     }
-
     return true
+
+//    println(character)
+//    for(i in grid[row].indices) {
+//        print("${grid[row][i]}! ")
+//    }
+//    println()
 }
 
 fun checkVertically(column: Int, character: Char): Boolean {
@@ -148,7 +132,6 @@ fun checkVertically(column: Int, character: Char): Boolean {
             return  false
         }
     }
-
     return true
 }
 
@@ -169,5 +152,6 @@ fun checkDiagonally(character: Char): Boolean {
         }
     }
 
+    // Return true if either diagonal matches
     return primaryDiagonal || secondaryDiagonal
 }
