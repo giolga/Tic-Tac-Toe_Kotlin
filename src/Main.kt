@@ -24,7 +24,7 @@ fun main() {
     }
 
     while (!gameOver) {
-        if (gameOver) break
+//        if (gameOver) break
         setField()
         inputCharacter()
     }
@@ -39,12 +39,13 @@ fun inputCharacter() {
     var columnInserted: Int = -1
 
     if (input.length == 1) {
-        character = input[0]
+        character = XorY
 
         for (i in grid.indices) {
-            for (j in grid.indices) {
-                if (grid[i][j] == character) {
-                    grid[i][j] = XorY
+            if(charExists) break
+            for (j in grid[i].indices) {
+                if (grid[i][j] == input[0]) {
+                    grid[i][j] = character
                     charExists = true
                     rowInserted = i // Update rowInserted
                     columnInserted = j // Update columnInserted
@@ -60,12 +61,14 @@ fun inputCharacter() {
 
         //if character exists then function doesn't break so we continue working on our operations
 
-        if (checkHorizontally(rowInserted, character) ||
-            checkVertically(columnInserted, character) ||
-            checkDiagonally(character)) {
+        val horizontal = checkHorizontally(rowInserted, character)
+        val vertical = checkVertically(columnInserted, character)
+        val diagonal = checkDiagonally(character)
 
+        if (horizontal || vertical || diagonal) {
             gameOver = true
             println("Player $player won the game!")
+            setField()
             return
         }
 
@@ -75,6 +78,7 @@ fun inputCharacter() {
 }
 
 fun setField() {
+//    repeat(50) { println()}
     println("Player 1 - O \nPlayer 2 - X \nPlayer $player 's turn\n")
 
     for (i in grid.indices) {
@@ -106,18 +110,24 @@ fun setField() {
 }
 
 fun checkHorizontally(row: Int, character: Char): Boolean {
-
     //check if horizontal layer contains the same elements
-    for(gridCharacter in grid[row]) {
-        if(character != gridCharacter) {
+    for(column in grid[row].indices) {
+//        println("Checking grid[$row][$column]: ${grid[row][column]}")
+        if(character != grid[row][column]) {
             return  false
         }
     }
     return true
+
+//    println(character)
+//    for(i in grid[row].indices) {
+//        print("${grid[row][i]}! ")
+//    }
+//    println()
 }
 
 fun checkVertically(column: Int, character: Char): Boolean {
-    for(row in grid.indices) {
+    for(row in grid[column].indices) {
         if(character != grid[row][column] ) {
             return  false
         }
